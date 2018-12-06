@@ -11,7 +11,7 @@
 % (i.e. eradication of all tumor cells). Abbreviaions: PD = progressive 
 % disease, SD = stable disease, PR = partial remission, CR = complete 
 % remission. 
-
+cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
 %% PREPARE
 close all, clear all, format compact, clc
 addpath('./subroutines_2D/'); % include all functions for the 2D model

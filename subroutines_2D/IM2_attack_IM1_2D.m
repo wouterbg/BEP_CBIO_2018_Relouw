@@ -1,7 +1,7 @@
 % [added]
 % this function can be compiled to yield a massive speed increase
 function [IM1cells, IM1prop, IM2cells, IM2prop, L, Lt] = ...
-IM2_kill_IM1_2D(IM1cells, IM1prop, IM2cells, IM2prop, L, Lt,IMpkill,nh,ChtaxMap,engagementDuration)
+IM2_attack_IM1_2D(IM1cells, IM1prop, IM2cells, IM2prop, L, Lt,IMpkill,nh,ChtaxMap,engagementDuration)
 
 % pre-select immune cells that may be close enough to the tumor
 candidates = ChtaxMap(IM2cells)<=1;

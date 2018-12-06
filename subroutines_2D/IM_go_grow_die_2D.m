@@ -3,13 +3,16 @@
 % this function can be compiled with the MATLAB code generator
 
 function [L, IMcells, IMprop] =  IM_go_grow_die_2D(IMcells, IMprop, IMpprol, IMpmig, ...
-        IMpdeath, IMrwalk, IMkmax, ChtaxMap, L, nh)
-    
-m = getAdjacent_2D(L,IMcells,nh); % create masks for adjacent positions
+    IMpdeath, IMrwalk, IMkmax, ChtaxMap, L, nh)
 
+%%%%% Added 03-12-2018 OGO CB Group 22
+% added idx list, to ommit pprol and pdeath values for omitted cells this iteration 
+[m, idx] = getAdjacent_2D(L,IMcells,nh); % create masks for adjacent positions
 % P, D and Mi are mutually exclusive; Ps and De are dependent on P
-[P,D,Mi] = CellWhichAction(m.randI,IMpprol,IMpdeath,IMpmig);
-De = P & (IMprop.Pcap(m.indxF) == 0); % proliferation capacity exhaution -> Die
+[P,D,Mi] = CellWhichAction(m.randI,IMprop.pprol(idx),IMprop.pdeath(idx),IMpmig);
+%%%%%
+
+De = P & (IMprop.Pcap(m.indxF) == 0); % proliferation capacity exhaustion -> Die
 del = D | De; % cells to delete
 act = find((P | Mi) & ~del); % indices to the cells that will perform action
 
@@ -24,7 +27,7 @@ for iloop = 1:numel(act) % only for those that will do anything
         chemo = chemo/max(chemo(:)); % normalize
         chemo = (1-IMrwalk) * chemo + IMrwalk * rand(size(chemo));
         [~,cid] = min(chemo); % lowest distance 
-        indO = indOL(cid(1));   
+        indO = indOL(cid(1));
         if ~isempty(indO) %if there is still a free spot
             L(ngh2(indO)) = true; % add new cell to grid
             if P(currID) % proliferation
@@ -33,6 +36,12 @@ for iloop = 1:numel(act) % only for those that will do anything
                 IMprop.Pcap = [IMprop.Pcap, IMprop.Pcap(m.indxF(currID))]; % update property vector for Pmax
                 IMprop.Kcap = [IMprop.Kcap, IMkmax]; % update property vector for remaining kills
                 IMprop.engaged = [IMprop.engaged, 0]; % update property vector for engagement
+                
+                %%%%% Added 02-12-2018 OGO CB Group 22
+                IMprop.pprol = [IMprop.pprol, IMpprol];     % add default proliferation probability  
+                IMprop.pdeath = [IMprop.pdeath, IMpdeath];  % add default death probability
+                %%%%%
+                
             else % migration
                 L(IMcells(m.indxF(currID))) = false; %freeing spot
                 IMcells(m.indxF(currID)) = uint32(ngh2(indO));

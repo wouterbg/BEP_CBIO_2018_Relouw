@@ -9,9 +9,9 @@ try
     m = getAdjacent_2D(L,TUcells,nh); % create masks for adjacent positions
 catch
     warning('severe error: could not get neighborhood.');
-    whos, disp(char(10));
-    save SEVERE_ERROR; pause(60);
-    warning('error log saved. will continue...');
+%     whos, disp(newline);
+%     save SEVERE_ERROR; pause(60);
+%     warning('error log saved. will continue...');
 end
 
 % P, D and Mi are mutually exclusive; Ps and De are dependent on P
@@ -41,6 +41,10 @@ for iloop = 1:numel(act) % only for those that will do anything
                 TUprop.Pcap(m.indxF(currID)) = TUprop.Pcap(m.indxF(currID))-1;
                end
             end
+            
+            %%%%% Added 03-12-2018 OGO CB Group 22
+%             TUprop.TUpblock = [TUprop.TUpblock, TUpblock];
+            
         else % migration
             L(TUcells(m.indxF(currID))) = false; % freeing spot
             TUcells(m.indxF(currID)) = uint32(ngh2(indO)); % update cell position

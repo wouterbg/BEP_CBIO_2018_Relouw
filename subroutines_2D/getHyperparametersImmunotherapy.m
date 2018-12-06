@@ -206,9 +206,10 @@ switch char(expname) % parameters change after intervention
     
     case 'INTERVENTION_7_IM1_IM2_0_75_TUpblock'
     domainSize = [400 400]; % was 500 500
-    timeFirstRun = [120 15]; % was 120 30
-    addSteps1 = 240;         % was 360
-    addSteps2 = 120;
+    disp('changing parameters to test if everything works')
+    timeFirstRun = [1 1]%120 15]; % was 120 30
+    addSteps1 = 1%240;         % was 360
+    addSteps2 = 1%120;
     
     modVars1.TUpblock = repmat(0.75,[1 5]);         %was repmat(0.06,[1 5]); 
     modVars1.IMinflRate = repmat(7,[1 5]);          %was repmat(8,[1 10]);  
