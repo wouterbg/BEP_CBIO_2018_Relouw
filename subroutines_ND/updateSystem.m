@@ -7,7 +7,7 @@ function [mySystem,currentSummary] = updateSystem(mySystem,TUcells,TUprop,...
     mySystem.TU.TUprop.Pcap = TUprop.Pcap;
     
     % Added 03-12-2018 OGO CB Group 22
-    mySystem.TU.TUprop.TUpblock = TUprop.TUpblock;
+    mySystem.TU.TUprop.pblock = TUprop.pblock;
     
     mySystem.IM.IM1cells = IM1cells;
     mySystem.IM.IM1prop.Kcap = IM1prop.Kcap;
@@ -43,7 +43,7 @@ function [mySystem,currentSummary] = updateSystem(mySystem,TUcells,TUprop,...
     mySystem.grid.Li(IM2cells) = true;
     
     % summarize system
-    if ndims(L) == 2
+    if ismatrix(L)
         currentSummary = summarizeSystem_2D(mySystem,cnst);
     elseif ndims(L) == 3
         error('not yet implemented');
