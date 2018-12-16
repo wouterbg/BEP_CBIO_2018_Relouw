@@ -10,20 +10,20 @@
 % low, Lym high? had a 100% response rate, the majority complete responses 
 % (i.e. eradication of all tumor cells). Abbreviaions: PD = progressive 
 % disease, SD = stable disease, PR = partial remission, CR = complete 
-% remission. 
-cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
+% remission.
+% cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
 %% PREPARE
 close all, clear all, format compact, clc
 addpath('./subroutines_2D/'); % include all functions for the 2D model
 addpath('./subroutines_ND/'); % include generic subroutines
 
 for expname =  ...
-		{'INTERVENTION_7_IM1_IM2_0_75_TUpblock'}
+		{'ll','hl','lh','hh'}
 
     
 randmodulator = 100; % default 100, for duplicate: 101, for triplicate: 102
 [modVars1,modVars2,override,tFirstRun,domSize,tAfterInterv1,tAfterInterv2] = ...
-    getHyperparametersImmunotherapy(expname); % get hyperparameters for current experiment
+    getHyperparametersImmunotherapy_new(expname); % get hyperparameters for current experiment
 [systemTemplate, cnst] = getSystemParams('2D',domSize); % create system template
 cnst.nSteps = tFirstRun(1);
 cnst.drawWhen = tFirstRun(2);
@@ -40,9 +40,13 @@ end
     
 cnst.saveImage = true; % save image after each run
 sysPackOne = getSystemPackage(modVars1,systemTemplate,randmodulator);
+
+
+
+
+
 disp('updated parameter container for FIRST RUN');
 disp(['will perform ',num2str(numel(sysPackOne)),' runs']);
-
 
 % PREPARE THE SYSTEM
 rng('shuffle');
@@ -63,27 +67,27 @@ parfor i=1:numel(sysPackOne) % FIRST RUN: RUN SYSTEM UNTIL INTERIM ANALYSIS
     % END PLAUSIBILITY CHECK ------------------------------------------------
     nAttempts = 1;
     while nAttempts <= 5 % try 5 times 
-    partialTime = tic;
-    disp('starting analysis...'); % run the model
-    [sysPackOne{i}, lastImage, summaryOne{i}, imWin, fcount] = ...
-        growTumor_2D(sysPackOne{i},cnst);
-    disp(['finished experiment #',num2str(i), ', nAttempts = ', num2str(nAttempts),...
-        ', time needed: ', num2str(toc(partialTime)), ' imWin = ', num2str(imWin)]);
-    % if the tumor was eradicated prematurely, try a different seed
-    if imWin~=0 && imWin <= requireTumorAlive 
-        sysPackOne{i}.params.initialSeed = sysPackOne{i}.params.initialSeed + 10;
-        nAttempts = nAttempts + 1;
-        disp('attempt was NOT successful');
-    else % successful -> save images
-        if cnst.saveImage
-            for k = 1:fcount
-            imwrite(lastImage{k},['./output/',masterID,'/','iter_',num2str(i),...
-                '_01-ONE_frame_',num2str(k),'_attempt_',num2str(nAttempts),'.png']);
-            disp(['saved experiment #',num2str(i),' frame ', num2str(k), ' PRE']);
+        partialTime = tic;
+        disp('starting analysis...'); % run the model
+        [sysPackOne{i}, lastImage, summaryOne{i}, imWin, fcount] = ...
+            growTumor_2D(sysPackOne{i},cnst);
+        disp(['finished experiment #',num2str(i), ', nAttempts = ', num2str(nAttempts),...
+            ', time needed: ', num2str(toc(partialTime)), ' imWin = ', num2str(imWin)]);
+        % if the tumor was eradicated prematurely, try a different seed
+        if imWin~=0 && imWin <= requireTumorAlive 
+            sysPackOne{i}.params.initialSeed = sysPackOne{i}.params.initialSeed + 10;
+            nAttempts = nAttempts + 1;
+            disp('attempt was NOT successful');
+        else % successful -> save images
+            if cnst.saveImage
+                for k = 1:fcount
+                imwrite(lastImage{k},['./output/',masterID,'/','iter_',num2str(i),...
+                    '_01-ONE_frame_',num2str(k),'_attempt_',num2str(nAttempts),'.png']);
+                disp(['saved experiment #',num2str(i),' frame ', num2str(k), ' PRE']);
+                end
             end
+            disp(['attempt was successful',10]); break
         end
-        disp(['attempt was successful',10]); break
-    end
     end
 end
 disp(['total time was ',num2str(toc(globalTime))]);

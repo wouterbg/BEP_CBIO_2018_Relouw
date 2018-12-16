@@ -6,29 +6,30 @@ mySystem.params.initialSeed = 1;   % initial random seed, default 1
 mySystem.params.useMex = false;    % use MEX compiled subroutines wherever applicable
 mySystem.params.debugmode = false; % check consistency in each iteration, computationally expensive
 % END SYSTEM PROPERTIES -------------------------------------------
-
-mySystem.params.IMinflRate = 1;
-
+  
 % START INITIALIZE TUMOR CELLS -------------------------------------------
 mySystem.params.TUpprol = 0.5055;   % HISTO GENERATED - probability of proliferation
 mySystem.params.TUpmig = 0.35;      % probability of migrating, default 0.35
 mySystem.params.TUpdeath = 1-(1-0.0319)^4;  % HISTO GENERATED - probability of spontaneous death
 mySystem.params.TUpmax = 10;        % max. proliferation capacity, default 10
-mySystem.params.TUpblock = 0;       % [added] probability of blocking lymphocyte attack, default 0
+    mySystem.params.TUpblock_start = 0; % starting probability of blocking lymphocyte attack, default 0 [changed OGO 22] 
+    mySystem.params.TUpblock_change = 0;% [added OGO 22]
 mySystem.params.TUps = 0.7;         % probability of symmetric division, default 0.7
 % END INITIALIZE TUMOR CELLS ---------------------------------------------
 
 % START INITIALIZE LYMPHOCYTES ------------------------------------------
 mySystem.params.IM1kmax = 5;         % killing capacity of immune cells, default 5
 mySystem.params.IM1pmax = 10;        % proliferation capacity of immune cells, default 10
-mySystem.params.IM1pprol = 0.0449;   % HISTO GENERATED - probability of proliferation
+mySystem.params.IM1pprol_std = 0.0449;     % HISTO GENERATED - probability of proliferation
+    mySystem.params.IM1pprol_low = 0.0449-0.005; % [added OGO 22]
 mySystem.params.IM1pmig = 0.8;       % probability of migrating, default 0.7
 mySystem.params.IM1pkill = 0.1;      % probability of killing, default 0.1
-mySystem.params.IM1pdeath = 1-(1-0.0037)^4;  % HISTO GENERATED - probability of spontaneous death
+mySystem.params.IM1pdeath_std = 1-(1-0.0037)^4;         % HISTO GENERATED - probability of spontaneous death
+    mySystem.params.IM1pdeath_high = 1-(1-0.0037)^4+0.005;  % [added OGO 22]
 mySystem.params.IM1rwalk = 0.8;      % random influence on movement, default 0.75
 mySystem.params.IM1speed = 97;       % speed of immune cell movement, default 97
 mySystem.params.IM1influxProb = 0.3; % probability of immune cell influx, def. 0.72
-mySystem.params.IM1inflRate = mySystem.params.IMinflRate;     % how many immune cells appear simultaneously
+mySystem.params.IM1inflRate = 1;     % how many immune cells appear simultaneously
 mySystem.params.engagementDuration = 48; % how many intermed. steps is a killing cell engaged? default 48 (=6 hrs)
 % END INITIALIZE LYMPHOCYTES --------------------------------------------
 
@@ -41,8 +42,8 @@ mySystem.params.IM2pkill = 0.1;      % probability of killing, default 0.1
 mySystem.params.IM2pdeath = 1-(1-0.0037)^4;  % HISTO GENERATED - probability of spontaneous death
 mySystem.params.IM2rwalk = 0.8;      % random influence on movement, default 0.75
 mySystem.params.IM2speed = 97;       % speed of immune cell movement, default 97
-mySystem.params.IM2influxProb = 0.3;   % probability of immune cell influx, def. 0
-mySystem.params.IM2inflRate = mySystem.params.IMinflRate;     % how many immune cells appear simultaneously
+mySystem.params.IM2influxProb = 0.3; % probability of immune cell influx, def. 0
+mySystem.params.IM2inflRate = 1;     % how many immune cells appear simultaneously
 mySystem.params.engagementDuration = 48; % how many intermed. steps is a killing cell engaged? default 48 (=6 hrs)
 % END INITIALIZE NEW TYPE....? --------------------------------------------
 
@@ -78,6 +79,14 @@ if strcmp(dims,'2D') % parameters that are specific for 2D
 defRadius = 4;
 mySystem.params.smoothSE = strel('disk',defRadius); % smoothing structuring element for region growth
 mySystem.params.fillSE = strel('disk',defRadius); % smoothing structure for hypoxia map
+% disk for IFN diffusion [added OGO 22]
+mySystem.params.IFN_effect_disk = [ 0.0113    0.0133    0.0152    0.0160    0.0152    0.0133    0.0113;
+                                    0.0133    0.0170    0.0215    0.0240    0.0215    0.0170    0.0133;
+                                    0.0152    0.0215    0.0339    0.0480    0.0339    0.0215    0.0152;
+                                    0.0160    0.0240    0.0480         0    0.0480    0.0240    0.0160;
+                                    0.0152    0.0215    0.0339    0.0480    0.0339    0.0215    0.0152;
+                                    0.0133    0.0170    0.0215    0.0240    0.0215    0.0170    0.0133;
+                                    0.0113    0.0133    0.0152    0.0160    0.0152    0.0133    0.0113];
 mySystem.grid.N = spaceSetting(1);  % domain dimension vertical, default 380
 mySystem.grid.M = spaceSetting(2);  % domain dimension horizontal, default 380
 mySystem.params.mycellsize = 7;   % ball size in scatter plot, default 7

@@ -4,30 +4,20 @@ function [mySystem,currentSummary] = updateSystem(mySystem,TUcells,TUprop,...
     % copy all variables back to mySystem
     mySystem.TU.TUcells = TUcells;
     mySystem.TU.TUprop.isStem = TUprop.isStem;
-    mySystem.TU.TUprop.Pcap = TUprop.Pcap;
-    
-    % Added 03-12-2018 OGO CB Group 22
-    mySystem.TU.TUprop.pblock = TUprop.pblock;
+    mySystem.TU.TUprop.Pcap = TUprop.Pcap;  
+    mySystem.TU.TUprop.pblock = TUprop.pblock; % [added OGO 22]
     
     mySystem.IM.IM1cells = IM1cells;
     mySystem.IM.IM1prop.Kcap = IM1prop.Kcap;
     mySystem.IM.IM1prop.Pcap = IM1prop.Pcap;  
     mySystem.IM.IM1prop.engaged = IM1prop.engaged;
-    
-    % Added 03-12-2018 OGO CB Group 22
-    mySystem.IM.IM1prop.pprol = IM1prop.pprol;
-    mySystem.IM.IM1prop.pdeath = IM1prop.pdeath;
-    %%%%%
+    mySystem.IM.IM1prop.pprol = IM1prop.pprol; % [added OGO 22]
+    mySystem.IM.IM1prop.pdeath = IM1prop.pdeath; % [added OGO 22]
     
     mySystem.IM.IM2cells = IM2cells;
     mySystem.IM.IM2prop.Kcap = IM2prop.Kcap;
     mySystem.IM.IM2prop.Pcap = IM2prop.Pcap;  
     mySystem.IM.IM2prop.engaged = IM2prop.engaged;
-    
-    % Added 03-12-2018 OGO CB Group 22
-    mySystem.IM.IM2prop.pprol = IM2prop.pprol;
-    mySystem.IM.IM2prop.pdeath = IM2prop.pdeath;
-    %%%%%
     
     mySystem.grid.ChtaxMap = ChtaxMap;
     mySystem.grid.HypoxMap = HypoxMap;

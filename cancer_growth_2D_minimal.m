@@ -4,8 +4,8 @@
 % What is this? this is an agent-based model of tumor cell - immune cells interactions
 % How does it work? open this file in Matlab and run it.
 
-close all, clear all, format compact, clc
-cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
+close all, clear all, format compact,  clc
+% cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
 addpath('./subroutines_2D/'); % include all functions for the 2D model
 addpath('./subroutines_ND/'); % include generic subroutines
 
@@ -17,18 +17,18 @@ addpath('./subroutines_ND/'); % include generic subroutines
 [sysTempl, cnst] = getSystemParams('2D',[320 320]);
 
 % override some system parameters (just for this example)
-sysTempl.params.TUps = 0.76;         
-sysTempl.params.IM1influxProb = 0.4;
-sysTempl.params.IM2influxProb = 0;
-sysTempl.params.TUblock = 1;
-sysTempl.params.probSeedFibr = 0.0025;
-sysTempl.params.probSeedNecr = 0.00005;
-sysTempl.params.stromaPerm = 0.10;
-saveImage = true; 
+sysTempl.params.TUpblock_start = 0;
+sysTempl.params.TUpblock_change = 1;
+
+change = 0.0;
+sysTempl.params.IM1pprol_low = 0.0449-change;
+sysTempl.params.IM1pdeath_high = 1-(1-0.0037)^4+change;
+
+saveImage = true;
 saveVideo = true;
 
 % add/override some global variables after loading the system
-cnst.nSteps   = 160;    % how many iterations in the first place
+cnst.nSteps   = 80;    % how many iterations in the first place
 cnst.drawWhen = 1;      % draw after ... iterations
 expname = 'demoVideo';    % experiment name that will be used to save results
 

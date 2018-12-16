@@ -5,12 +5,15 @@
 function [L, IMcells, IMprop] =  IM_go_grow_die_2D(IMcells, IMprop, IMpprol, IMpmig, ...
     IMpdeath, IMrwalk, IMkmax, ChtaxMap, L, nh)
 
-%%%%% Added 03-12-2018 OGO CB Group 22
-% added idx list, to ommit pprol and pdeath values for omitted cells this iteration 
+
+% make idx list to ommit pprol and pdeath values for omitted cells this iteration [added OGO 22]
 [m, idx] = getAdjacent_2D(L,IMcells,nh); % create masks for adjacent positions
 % P, D and Mi are mutually exclusive; Ps and De are dependent on P
-[P,D,Mi] = CellWhichAction(m.randI,IMprop.pprol(idx),IMprop.pdeath(idx),IMpmig);
-%%%%%
+if length(fieldnames(IMprop)) == 5 % if immune cell type 1 [added OGO 22]
+    [P,D,Mi] = CellWhichAction(m.randI,IMprop.pprol(idx),IMprop.pdeath(idx),IMpmig);
+else
+    [P,D,Mi] = CellWhichAction(m.randI,IMpprol,IMpdeath,IMpmig);
+end
 
 De = P & (IMprop.Pcap(m.indxF) == 0); % proliferation capacity exhaustion -> Die
 del = D | De; % cells to delete
@@ -36,12 +39,10 @@ for iloop = 1:numel(act) % only for those that will do anything
                 IMprop.Pcap = [IMprop.Pcap, IMprop.Pcap(m.indxF(currID))]; % update property vector for Pmax
                 IMprop.Kcap = [IMprop.Kcap, IMkmax]; % update property vector for remaining kills
                 IMprop.engaged = [IMprop.engaged, 0]; % update property vector for engagement
-                
-                %%%%% Added 02-12-2018 OGO CB Group 22
-                IMprop.pprol = [IMprop.pprol, IMpprol];     % add default proliferation probability  
-                IMprop.pdeath = [IMprop.pdeath, IMpdeath];  % add default death probability
-                %%%%%
-                
+                if length(fieldnames(IMprop)) == 5 % if immune cell type 1 [added OGO 22]
+                    IMprop.pprol = [IMprop.pprol, IMpprol];     % add default proliferation probability [added OGO 22]
+                    IMprop.pdeath = [IMprop.pdeath, IMpdeath];  % add default death probability [added OGO 22]
+                end
             else % migration
                 L(IMcells(m.indxF(currID))) = false; %freeing spot
                 IMcells(m.indxF(currID)) = uint32(ngh2(indO));

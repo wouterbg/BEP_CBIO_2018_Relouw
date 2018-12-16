@@ -11,11 +11,8 @@ function [mySystem, finalImage, finalSummary, imWin, fcount] = ...
 cellfun(@(f) evalin('caller',[f ' = mySystem.params.' f ';']), fieldnames(mySystem.params));
 cellfun(@(f) evalin('caller',[f ' = mySystem.grid.' f ';']), fieldnames(mySystem.grid));
 if cnst.createNewSystem % create a new (empty) system
-    [L, TUcells, IM1cells, IM2cells, TUprop, IM1prop, IM2prop] = initializeSystem_2D(N,M,TUpmax);
-    
-    % Added 03-12-2018 OGO CB Group 22 (starting tumor cell in the middle)
-    TUprop.TUpblock = TUpblock;
-    
+    [L, TUcells, IM1cells, IM2cells, TUprop, IM1prop, IM2prop] = initializeSystem_2D(N,M,TUpmax);    
+    TUprop.pblock = TUpblock_start; % starting tumor cell in the middle [added OGO 22]    
     Ln = false(size(L));    % initialize necrosis map
     Lf = false(size(L));    % initialize fibrosis map
 else % use existing system and grow it further
@@ -40,7 +37,7 @@ for i = 1:cnst.nSteps % iterate through time steps
 L(Lf) = rand(sum(Lf(:)),1)>stromaPerm; % permeabilize some stroma-filled grid cells
 L([IM2cells,IM1cells,TUcells]) = true; % ensure that all cells are present on the grid
 [TUcells,TUprop] = shuffleTU(TUcells,TUprop);
-[L, TUcells, TUprop] = TU_go_grow_die_2D( L, nh, TUcells, TUprop, TUpprol, TUpmig, TUpdeath, TUps);
+[L, TUcells, TUprop] = TU_go_grow_die_2D( L, nh, TUcells, TUprop, TUpprol, TUpmig, TUpdeath, TUps, TUpblock_start);
 Lt = updateTumorGrid(L,TUcells); % update tumor grid
 % END TUMOR CELL ROUND ---------------------------------------------------
 
@@ -51,29 +48,26 @@ Lt = updateTumorGrid(L,TUcells); % update tumor grid
 % [modified] START IMMUNE CELL ROUND (LYMPHOCYTES) ------------------------------------------------
 L([IM2cells,IM1cells,TUcells]) = true; % ensure that all cells are present on the grid
 if rand()<=IM1influxProb % randomly trigger influx
-[L,IM1cells,IM1prop] = IMinflux(L,IM1cells,IM1prop,IM1pmax,IM1kmax,IM1inflRate,IM1pprol,IM1pdeath);
+[L,IM1cells,IM1prop] = IMinflux(L,IM1cells,IM1prop,IM1pmax,IM1kmax,IM1inflRate,IM1pprol_std,IM1pdeath_std);
 end
 
 [IM1cells,IM1prop] = shuffleIM(IM1cells,IM1prop); % randomly shuffle immune cells
 
-if numel(IM1cells)>0 % if there are any immune cells 
+if numel(IM1cells)>0 % if there are any immune cells
 for j = 1:(IM1speed-1) % allow immune cells to move N times per round
     L(Ln) = false; % for immune cell movement, necrosis is invisible
     L(Lf) = rand(sum(Lf(:)),1)>stromaPerm; % permeabilize some stroma-filled grid cells
     L([IM2cells,IM1cells,TUcells]) = true; % ensure that all cells are present on the grid
     [L, IM1cells] =  IM_go_2D(IM1cells, IM1pmig, IM1rwalk, ChtaxMap, L, nh);
-    [TUcells, TUprop, IM1cells, IM1prop, L, Lt] = ... % tumor cell killing by immune cells
-    IM_kill_TU_2D(TUcells, TUprop, IM1cells, IM1prop, L, Lt,IM1pkill,TUpblock,effImmuno,nh,ChtaxMap,engagementDuration);
-    if length(TUpblock)~=1
-        length(TUpblock)
-    end
-    
+    TUprop.pblock = IM_IFN_effect(IM1cells,TUcells,size(L),TUpblock_start,TUpblock_change,IFN_effect_disk); % update pblocks [added OGO 22]
+    [TUcells, TUprop, IM1cells, IM1prop, L, Lt] = ... % IM attack TU and TU can block [changed OGO 22]       
+    IM_vs_TU_2D(TUcells, TUprop, IM1cells, IM1prop, L, Lt,IM1pkill,nh,ChtaxMap,engagementDuration,IM1pprol_low,IM1pdeath_high);    
     IM1prop.engaged(IM1prop.engaged>0) = IM1prop.engaged(IM1prop.engaged>0)-1; % un-engage lymphocytes
 end
+assignin('base','normal_name',TUprop)
 % allow immune cells to move once more or to proliferate or die
-
-[L, IM1cells, IM1prop] =  IM_go_grow_die_2D(IM1cells, IM1prop, IM1pprol, IM1pmig, ...
-        IM1pdeath, IM1rwalk, IM1kmax, ChtaxMap, L, nh); 
+[L, IM1cells, IM1prop] =  IM_go_grow_die_2D(IM1cells, IM1prop, IM1prop.pprol, IM1pmig, ...
+        IM1prop.pdeath, IM1rwalk, IM1kmax, ChtaxMap, L, nh); 
 end % end (if there are any immune cells)
 
 L(Ln|Lf) = true; % fully turn on necrosis and fibrosis again
@@ -83,9 +77,7 @@ L([IM2cells,IM1cells,TUcells]) = true; % ensure that all cells are present on th
 % [added] START IMMUNE CELL ROUND (NEW TYPE....?) ------------------------------------------------
 L([IM2cells,IM1cells,TUcells]) = true; % ensure that all cells are present on the grid
 if rand()<=IM2influxProb % randomly trigger influx
-    % Added 02-12-2018 OGO CB Group 22
     [L,IM2cells,IM2prop] = IMinflux(L,IM2cells,IM2prop,IM2pmax,IM2kmax,IM2inflRate,IM2pprol,IM2pdeath);
-    %%%%%
 end
 
 [IM2cells,IM2prop] = shuffleIM(IM2cells,IM2prop); % randomly shuffle immune cells
@@ -102,7 +94,7 @@ for j = 1:(IM2speed-1) % allow immune cells to move N times per round
 end
 % allow immune cells to move once more or to proliferate or die
 [L, IM2cells, IM2prop] =  IM_go_grow_die_2D(IM2cells, IM2prop, IM2pprol, IM2pmig, ...
-        IM1pprol, IM2rwalk, IM2kmax, ChtaxMap, L, nh); 
+        IM2pdeath, IM2rwalk, IM2kmax, ChtaxMap, L, nh); 
 end % end (if there are any immune cells)
 
 L(Ln|Lf) = true; % fully turn on necrosis and fibrosis again
