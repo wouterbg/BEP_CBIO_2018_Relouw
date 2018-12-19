@@ -59,12 +59,12 @@ for j = 1:(IM1speed-1) % allow immune cells to move N times per round
     L(Lf) = rand(sum(Lf(:)),1)>stromaPerm; % permeabilize some stroma-filled grid cells
     L([IM2cells,IM1cells,TUcells]) = true; % ensure that all cells are present on the grid
     [L, IM1cells] =  IM_go_2D(IM1cells, IM1pmig, IM1rwalk, ChtaxMap, L, nh);
-    TUprop.pblock = IM_IFN_effect(IM1cells,TUcells,size(L),TUpblock_start,TUpblock_change,IFN_effect_disk); % update pblocks [added OGO 22]
+    TUprop.pblock = IM_IFN_effect(IM1cells,TUcells,size(L),TUpblock_start,TUpblock_change,IFN_effect_disk,effImmuno); % update pblocks [added OGO 22]
     [TUcells, TUprop, IM1cells, IM1prop, L, Lt] = ... % IM attack TU and TU can block [changed OGO 22]       
     IM_vs_TU_2D(TUcells, TUprop, IM1cells, IM1prop, L, Lt,IM1pkill,nh,ChtaxMap,engagementDuration,IM1pprol_low,IM1pdeath_high);    
     IM1prop.engaged(IM1prop.engaged>0) = IM1prop.engaged(IM1prop.engaged>0)-1; % un-engage lymphocytes
 end
-assignin('base','normal_name',TUprop)
+
 % allow immune cells to move once more or to proliferate or die
 [L, IM1cells, IM1prop] =  IM_go_grow_die_2D(IM1cells, IM1prop, IM1prop.pprol, IM1pmig, ...
         IM1prop.pdeath, IM1rwalk, IM1kmax, ChtaxMap, L, nh); 

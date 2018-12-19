@@ -33,11 +33,14 @@ function summaryOut = summarizeSystem_2D(mySystem,cnst)
     summaryOut.IM2_margin = sum(Mask_margin(mySystem.IM.IM2cells));%/numel(mySystem.IM.IM2cells);
     summaryOut.IM2_around = sum(Mask_around(mySystem.IM.IM2cells));%/numel(mySystem.IM.IM2cells);
 	
-	% more features: tumor/stroma ratio, tumor/necrosis ratio, stromal immune cell fraction
+	% more features: tumor/stroma ratio, tumor/necrosis ratio, stromal
+	% immune cell fraction, tumor purity
     summaryOut.TU_Stro_ratio_log = log(double(numel(mySystem.TU.TUcells))/double(sum(mySystem.grid.Lf(:))));
     summaryOut.TU_Necr_ratio_log = log(double(numel(mySystem.TU.TUcells))/double(sum(mySystem.grid.Ln(:))));
     summaryOut.IM1_instroma = sum(mySystem.grid.Lf(mySystem.IM.IM1cells));%/numel(mySystem.IM.IM1cells);
     summaryOut.IM2_instroma = sum(mySystem.grid.Lf(mySystem.IM.IM2cells));%/numel(mySystem.IM.IM2cells);
+    summaryOut.TU_purity = double(summaryOut.TU_Num/sum(Mask_intumor(:)));
+    summaryOut.TUpblock_avg = double(sum(mySystem.TU.TUprop.pblock)/length(mySystem.TU.TUprop.pblock));
     end
     
     % copy hyper-parameters

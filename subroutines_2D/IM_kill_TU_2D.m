@@ -19,7 +19,7 @@ if sum(candidates(:)) % if there are candidates
         neighbPosit = St(randperm(length(nh.aux)),jj);
         instakill = ismember(neighbPosit(:),TUcells(:));
         % if the cell encounters another cell to kill
-        if sum(instakill) > 0
+        if sum(instakill) > 0 
             % if more than 1 possible targets then use the first one
             possibleTargets = neighbPosit(instakill); % possible targets
             killwhat = int32(possibleTargets(1)); % kill only the first candidate   
@@ -31,6 +31,7 @@ if sum(candidates(:)) % if there are candidates
     % [added] only a fraction of the kills is truely effective, depends on
     % TUpblock
     targetIDs = targetIDs(1:int8(length(targetIDs)*(1-TUpblock*(1-effImmuno))));
+    
     % find indices to killed cell and killer cell. If the unlikely case
     % happens that one tumor cell is simultaneously killed by two immune cells,
     % then both will be exhausted

@@ -13,7 +13,7 @@ mySystem.params.TUpmig = 0.35;      % probability of migrating, default 0.35
 mySystem.params.TUpdeath = 1-(1-0.0319)^4;  % HISTO GENERATED - probability of spontaneous death
 mySystem.params.TUpmax = 10;        % max. proliferation capacity, default 10
     mySystem.params.TUpblock_start = 0; % starting probability of blocking lymphocyte attack, default 0 [changed OGO 22] 
-    mySystem.params.TUpblock_change = 0;% [added OGO 22]
+    mySystem.params.TUpblock_change = 1.3;% [added OGO 22]
 mySystem.params.TUps = 0.7;         % probability of symmetric division, default 0.7
 % END INITIALIZE TUMOR CELLS ---------------------------------------------
 

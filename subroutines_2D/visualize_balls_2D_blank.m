@@ -91,7 +91,7 @@ function visualize_balls_2D_blank(mySystem)
     set(gca,'XLim',[0 mySystem.grid.M]);
     set(gca,'YLim',[0 mySystem.grid.N]);
     axis equal off
-    set(gcf,'Color','w');
+    set(gcf,'Color','g');
     
     % add time counter to image
     text(beginSc,beginSc/2,[num2str(mySystem.grid.StepsDone/2),' days'],...
