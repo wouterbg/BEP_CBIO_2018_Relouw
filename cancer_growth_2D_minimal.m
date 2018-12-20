@@ -18,11 +18,11 @@ addpath('./subroutines_ND/'); % include generic subroutines
 
 % override some system parameters (just for this example)
 sysTempl.params.TUpblock_start = 0;
-sysTempl.params.TUpblock_change = 1;
-
-change = 0.0;
-sysTempl.params.IM1pprol_low = 0.0449-change;
-sysTempl.params.IM1pdeath_high = 1-(1-0.0037)^4+change;
+sysTempl.params.TUpblock_change = 1.3028;
+% 
+% change = 0.005;
+% sysTempl.params.IM1pprol_low = 0.0449-change;
+% sysTempl.params.IM1pdeath_high = 1-(1-0.0037)^4+change;
 
 saveImage = true;
 saveVideo = true;
