@@ -11,14 +11,14 @@
 % (i.e. eradication of all tumor cells). Abbreviaions: PD = progressive 
 % disease, SD = stable disease, PR = partial remission, CR = complete 
 % remission.
-% cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
+cd 'C:\Users\s167917\Documents\#School\Jaar 3\2 OGO Computational Biology\BEP_model'
 %% PREPARE
 close all, clear all, format compact, clc
 addpath('./subroutines_2D/'); % include all functions for the 2D model
 addpath('./subroutines_ND/'); % include generic subroutines
 
 for expname =  ...
-		{'ll','hl','lh','hh'}
+		{'0.25_7','0.25_5','0.25_3','0.5_7','0.5_5','0.5_3','0.75_7','0.75_5','0.75_3'}
 
     
 randmodulator = 100; % default 100, for duplicate: 101, for triplicate: 102
@@ -40,8 +40,6 @@ end
     
 cnst.saveImage = true; % save image after each run
 sysPackOne = getSystemPackage(modVars1,systemTemplate,randmodulator);
-
-
 
 
 
@@ -90,6 +88,8 @@ parfor i=1:numel(sysPackOne) % FIRST RUN: RUN SYSTEM UNTIL INTERIM ANALYSIS
         end
     end
 end
+
+
 disp(['total time was ',num2str(toc(globalTime))]);
 if cnst.doSummary % summarize first experiment
     [finalSummaryOne,paramsOne] = summarizeExperiment_2D(sysPackOne,cnst);
@@ -155,8 +155,10 @@ if cnst.doSummary % summarize third experiment
     [finalSummaryThree,paramsThree] = summarizeExperiment_2D(sysPackThree,cnst_third);  
 end
 
+
+
 % SAVE ALL RESULTS
-save(['./output/',masterID],'finalSummaryOne','paramsOne',...
+save(['./output/',masterID,'.mat'],'finalSummaryOne','paramsOne',...
     'finalSummaryTwo','paramsTwo','finalSummaryThree','paramsThree',...
     'summaryOne','summaryTwo','summaryThree');
 
