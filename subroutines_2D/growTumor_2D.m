@@ -141,7 +141,7 @@ if (mod(i-1,cnst.drawWhen)==cnst.drawWhen-1) || tumorIsGone % plot status after 
         IM1cells,IM2cells,IM1prop,IM2prop,ChtaxMap,HypoxMap,L,Lt,Ln,Lf,i,cnst);
     if cnst.verbose % enforce drawing and create image from plot
         visualize_balls_2D_blank(mySystem);
-        drawnow, currFrame = getframe(gca);
+        drawnow, currFrame = getframe(gcf);
         finalImage{fcount} = currFrame.cdata;
         finalSummary{fcount} = currentSummary;
     else

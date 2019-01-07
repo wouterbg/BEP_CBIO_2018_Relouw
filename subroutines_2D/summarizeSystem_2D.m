@@ -40,7 +40,7 @@ function summaryOut = summarizeSystem_2D(mySystem,cnst)
     summaryOut.IM1_instroma = sum(mySystem.grid.Lf(mySystem.IM.IM1cells));%/numel(mySystem.IM.IM1cells);
     summaryOut.IM2_instroma = sum(mySystem.grid.Lf(mySystem.IM.IM2cells));%/numel(mySystem.IM.IM2cells);
     summaryOut.TU_purity = double(summaryOut.TU_Num/sum(Mask_intumor(:)));
-    summaryOut.TUpblock_avg = double(sum(mySystem.TU.TUprop.pblock)/length(mySystem.TU.TUprop.pblock));
+    summaryOut.pblock_avg = double(sum(mySystem.TU.TUprop.pblock)/length(mySystem.TU.TUprop.pblock));
     end
     
     % copy hyper-parameters

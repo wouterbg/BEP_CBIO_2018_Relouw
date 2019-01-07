@@ -6,8 +6,8 @@ domainSize = [400 400];
 addSteps1 = 240;
 addSteps2 = 120;
 overrideBefore = struct();
-nr = 5;
 
+nr = 5;
 switch char(expname) % parameters change after intervention
     case '0.25_7'
     modVars1.TUpblock_start = repmat(0.25,[1 nr]);

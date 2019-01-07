@@ -6,14 +6,14 @@ mySystem.params.initialSeed = 1;   % initial random seed, default 1
 mySystem.params.useMex = false;    % use MEX compiled subroutines wherever applicable
 mySystem.params.debugmode = false; % check consistency in each iteration, computationally expensive
 % END SYSTEM PROPERTIES -------------------------------------------
-  
+
 % START INITIALIZE TUMOR CELLS -------------------------------------------
 mySystem.params.TUpprol = 0.5055;   % HISTO GENERATED - probability of proliferation
 mySystem.params.TUpmig = 0.35;      % probability of migrating, default 0.35
 mySystem.params.TUpdeath = 1-(1-0.0319)^4;  % HISTO GENERATED - probability of spontaneous death
 mySystem.params.TUpmax = 10;        % max. proliferation capacity, default 10
     mySystem.params.TUpblock_start = 0; % starting probability of blocking lymphocyte attack, default 0 [changed OGO 22] 
-    mySystem.params.TUpblock_change = 1.3;% [added OGO 22]
+    mySystem.params.TUpblock_change = 0.25;% [added OGO 22]
 mySystem.params.TUps = 0.7;         % probability of symmetric division, default 0.7
 % END INITIALIZE TUMOR CELLS ---------------------------------------------
 
@@ -54,7 +54,7 @@ mySystem.params.probSeedFibr = 0.00025;   % probability of turning into fibrosis
 seedFrac = 0.3;
 mySystem.params.necrFrac = seedFrac;  % size of necrotic seed, 0...1, default 0.3
 mySystem.params.fibrFrac = seedFrac;  % size of fibrotic seed, 0...1, default 0.3
-mySystem.params.stromaPerm = 0.0025;        % 0 = stroma not permeable, 1 = fully permeable
+mySystem.params.stromaPerm = 0.0025;  % 0 = stroma not permeable, 1 = fully permeable
 % END INITIALIZE NECROSIS AND FIBROSIS  ---------------------------------
 
 % [added] START DEFINING IMMUNOTHERAPY CONSTANTS -----------------------------------------
