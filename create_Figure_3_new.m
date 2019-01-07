@@ -18,7 +18,7 @@ addpath('./subroutines_2D/'); % include all functions for the 2D model
 addpath('./subroutines_ND/'); % include generic subroutines
 
 for expname =  ...
-		{'0.5_3','0.75_7','0.25_7'} %'0.25_5','0.25_3','0.5_7','0.5_5','0.5_3','0.75_7','0.75_5','0.75_3'}
+		{'0.25_7','0.25_5','0.25_3','0.5_7','0.5_5','0.5_3','0.75_7','0.75_5','0.75_3'}
 
     
 randmodulator = 100; % default 100, for duplicate: 101, for triplicate: 102
